@@ -3,7 +3,11 @@ import { superValidate } from "sveltekit-superforms";
 import { formSchema } from "./schema";
 import { zod } from "sveltekit-superforms/adapters";
 
-export const load: PageServerLoad = async () => {
+export const load: PageServerLoad = async ({ locals }) => {
+  //TODO: redirects
+  // if (!locals.user) {
+  //
+  // }
   return {
     form: await superValidate(zod(formSchema)),
   };

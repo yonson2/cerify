@@ -1,7 +1,7 @@
 import { Lucia } from "lucia";
 import { dev } from "$app/environment";
 
-import { prisma } from "$lib/server/prisma";
+import { adapter } from "$lib/server/drizzle";
 
 import { Spotify } from "arctic";
 import { SPOTIFY_CLIENT_ID, SPOTIFY_CLIENT_SECRET, SPOTIFY_REDIRECT_URI } from "$env/static/private";
@@ -9,7 +9,7 @@ import { SPOTIFY_CLIENT_ID, SPOTIFY_CLIENT_SECRET, SPOTIFY_REDIRECT_URI } from "
 export const spotify = new Spotify(SPOTIFY_CLIENT_ID, SPOTIFY_CLIENT_SECRET, SPOTIFY_REDIRECT_URI);
 
 
-export const lucia = new Lucia(prisma, {
+export const lucia = new Lucia(adapter, {
   sessionCookie: {
     attributes: {
       secure: !dev
@@ -19,8 +19,15 @@ export const lucia = new Lucia(prisma, {
     return {
       // attributes has the type of DatabaseUserAttributes
       spotifyId: attributes.spotify_id,
-      email: attributes.email
+      email: attributes.email,
     };
+  },
+  getSessionAttributes: (attributes) => {
+    return {
+      token: attributes.token,
+      refreshToken: attributes.refreshToken,
+      tokenExpiration: attributes.tokenExpiration,
+    }
   }
 
 });
@@ -40,6 +47,8 @@ interface DatabaseUserAttributes {
 
 interface DatabaseSessionAttributes {
   token: string;
+  refreshToken: string;
+  tokenExpiration: Date;
 }
 
 

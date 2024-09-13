@@ -11,7 +11,7 @@ declare global {
     // interface PageState {}
     // interface Platform {}
   }
-  var prisma: PrismaClient;
+  var db: LibSQLDatabase;
 }
 
 export { };

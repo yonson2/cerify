@@ -1,6 +1,8 @@
 import { OAuth2RequestError } from "arctic";
 import { generateIdFromEntropySize } from "lucia";
 import { spotify, lucia } from "$lib/server/auth";
+import { eq } from 'drizzle-orm';
+import { usersTable, type InsertUser, type SelectUser } from "../../../../db/schema";
 
 import type { RequestEvent } from "@sveltejs/kit";
 
@@ -25,12 +27,18 @@ export async function GET(event: RequestEvent): Promise<Response> {
     const spotifyUser: SpotifyUser = await spotifyUserResponse.json();
 
     // Replace this with your own DB client.
-    const existingUser = await prisma.user.findFirst({ where: { spotifyId: spotifyUser.id } })
+    const existingUsers: SelectUser[] = await db.select().from(usersTable).where(eq(usersTable.spotifyId, spotifyUser.id));
+    // const existingUser = await db.query.users.findFirst({ where: eq(usersTable.spotifyId, spotifyUser.id) });
 
-    if (existingUser) {
-
-      console.log("USER CREATED: ", existingUser);
-      const session = await lucia.createSession(existingUser.id, { token: tokens.accessToken });
+    if (existingUsers.length > 0) {
+      const session = await lucia.createSession(
+        existingUsers[0].id,
+        {
+          token: tokens.accessToken,
+          refreshToken: tokens.refreshToken,
+          tokenExpiration: tokens.accessTokenExpiresAt
+        }
+      );
       const sessionCookie = lucia.createSessionCookie(session.id);
       event.cookies.set(sessionCookie.name, sessionCookie.value, {
         path: ".",
@@ -39,15 +47,17 @@ export async function GET(event: RequestEvent): Promise<Response> {
     } else {
       const userId = generateIdFromEntropySize(10); // 16 characters long
 
-      await prisma.user.create({
-        data: {
-          id: userId,
-          spotifyId: spotifyUser.id,
-          email: spotifyUser.email,
-        }
-      })
+      const user: InsertUser = { id: userId, email: spotifyUser.email, spotifyId: spotifyUser.id }
+      await db.insert(usersTable).values(user);
 
-      const session = await lucia.createSession(userId, { token: tokens.accessToken });
+      const session = await lucia.createSession(
+        userId,
+        {
+          token: tokens.accessToken,
+          refreshToken: tokens.refreshToken,
+          tokenExpiration: tokens.accessTokenExpiresAt
+        }
+      );
       const sessionCookie = lucia.createSessionCookie(session.id);
       event.cookies.set(sessionCookie.name, sessionCookie.value, {
         path: ".",
@@ -61,8 +71,7 @@ export async function GET(event: RequestEvent): Promise<Response> {
       }
     });
   } catch (e) {
-    console.log("AAAAAAAAAAAAAAAAAAAAAAAAAAAA");
-    console.log(e);
+    console.error("New error came in: ", e);
     // the specific error message depends on the provider
     if (e instanceof OAuth2RequestError) {
       // invalid code
