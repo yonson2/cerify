@@ -1,5 +1,4 @@
-export function handleError({ event, error }) {
-  console.log("AAAAAAAAAA");
+export function handleError({ error }) {
   console.error(error.stack);
 
   return {

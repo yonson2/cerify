@@ -36,6 +36,7 @@ export async function redirectToSpotifyAuthorize() {
 }
 
 export async function getToken(code: string) {
+  //TODO: switch to cookie.?
   const code_verifier = window.localStorage.getItem('code_verifier') || '';
 
   const response = await fetch(tokenEndpoint, {

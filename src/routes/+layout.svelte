@@ -2,6 +2,7 @@
 	import { ModeWatcher } from 'mode-watcher';
 	import '../app.css';
 	import LightSwitch from '$lib/components/ui/light-switch/light-switch.svelte';
+	import Logo from '$lib/components/ui/logo/logo.svelte';
 </script>
 
 <ModeWatcher />
@@ -15,6 +16,7 @@
 		</div>
 	</div>
 	<div class="m-12">
+		<Logo />
 		<slot />
 	</div>
 </main>

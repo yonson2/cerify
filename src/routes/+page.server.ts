@@ -9,7 +9,6 @@ import { zod } from "sveltekit-superforms/adapters";
 export const load: PageServerLoad = async ({ url }) => {
   // On page load, try to fetch auth code from current browser search URL
   const code = url.searchParams.get('code') || '';
-  // url.searchParams.set('code', '');
 
   return {
     form: await superValidate(zod(formSchema)),
