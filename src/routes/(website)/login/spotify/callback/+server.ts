@@ -2,7 +2,7 @@ import { OAuth2RequestError } from "arctic";
 import { generateIdFromEntropySize } from "lucia";
 import { spotify, lucia } from "$lib/server/auth";
 import { eq } from 'drizzle-orm';
-import { usersTable, type InsertUser, type SelectUser } from "../../../../db/schema";
+import { usersTable, type InsertUser, type SelectUser } from "../../../../../db/schema";
 
 import type { RequestEvent } from "@sveltejs/kit";
 

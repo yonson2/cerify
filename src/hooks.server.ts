@@ -1,11 +1,28 @@
 import { lucia } from "$lib/server/auth";
 import type { Handle } from "@sveltejs/kit";
+import { redirect } from "@sveltejs/kit";
+
+const loginPath = "/login";
+const publicPaths = [...loginPath];
+
+function isPathAllowed(path: string) {
+  return publicPaths.some(allowedPath =>
+    path === allowedPath || path.startsWith(allowedPath + '/')
+  );
+}
 
 export const handle: Handle = async ({ event, resolve }) => {
+  const url = new URL(event.request.url);
   const sessionId = event.cookies.get(lucia.sessionCookieName);
   if (!sessionId) {
     event.locals.user = null;
     event.locals.session = null;
+
+    // now check if the route is protected.
+    if (!isPathAllowed(url.pathname)) {
+      throw redirect(302, loginPath);
+    }
+
     return resolve(event);
   }
 
@@ -28,6 +45,11 @@ export const handle: Handle = async ({ event, resolve }) => {
   }
   event.locals.user = user;
   event.locals.session = session;
+
+  // let's redirect logged-in users from going to the /login page.
+  if (url.pathname === loginPath) {
+    throw redirect(302, "/");
+  }
   return resolve(event);
 };
 
