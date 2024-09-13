@@ -1,9 +1,11 @@
 <script lang="ts">
 	import * as Form from '$lib/components/ui/form';
 	import { Input } from '$lib/components/ui/input';
-	import { formSchema, type FormSchema } from './schema';
+	import { Icon } from 'svelte-awesome';
+	import { formSchema, type FormSchema } from '../../(website)/schema';
 	import { type SuperValidated, type Infer, superForm } from 'sveltekit-superforms';
 	import { zodClient } from 'sveltekit-superforms/adapters';
+	import { search } from 'svelte-awesome/icons';
 
 	export let data: SuperValidated<Infer<FormSchema>>;
 
@@ -14,24 +16,20 @@
 	const { form: formData } = form;
 </script>
 
-<form method="GET" action="/search">
+<form method="GET">
 	<Form.Field {form} name="q">
 		<Form.Control let:attrs>
-			<Form.Label>Search</Form.Label>
-			<div class="md:flex">
+			<div class="flex">
 				<Input
 					{...attrs}
 					bind:value={$formData.q}
-					class="bg-secondary md:flex-grow"
-					autofocus={true}
+					class="md:flex-grow"
+					placeholder={'Belarte...'}
 				/>
-				<Form.Button class="ml-4 hidden md:inline">Submit</Form.Button>
+				<Form.Button class="ml-2 bg-transparent" variant={'ghost'}>
+					<Icon data={search} class="text-primary" />
+				</Form.Button>
 			</div>
 		</Form.Control>
-		<Form.Description>What kind of playlists are you looking for?</Form.Description>
-		<Form.FieldErrors />
 	</Form.Field>
-	<div class="flex items-center justify-center md:hidden">
-		<Form.Button class="w-full md:w-auto">Submit</Form.Button>
-	</div>
 </form>

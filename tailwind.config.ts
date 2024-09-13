@@ -68,9 +68,18 @@ const config: Config = {
             transform: "translateY(0)",
           },
         },
+        shimmer: {
+          "0%, 90%, 100%": {
+            "background-position": "calc(-100% - var(--shimmer-width)) 0",
+          },
+          "30%, 60%": {
+            "background-position": "calc(100% + var(--shimmer-width)) 0",
+          },
+        },
       },
       animation: {
         slidein: "slidein 1s ease 300ms",
+        shimmer: "shimmer 8s infinite",
       },
     },
   },
