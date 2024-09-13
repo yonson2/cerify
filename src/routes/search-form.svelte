@@ -19,7 +19,12 @@
 		<Form.Control let:attrs>
 			<Form.Label>Search</Form.Label>
 			<div class="md:flex">
-				<Input {...attrs} bind:value={$formData.query} class="md:flex-grow" />
+				<Input
+					{...attrs}
+					bind:value={$formData.query}
+					class="bg-secondary md:flex-grow"
+					autofocus={true}
+				/>
 				<Form.Button class="ml-4 hidden md:inline">Submit</Form.Button>
 			</div>
 		</Form.Control>

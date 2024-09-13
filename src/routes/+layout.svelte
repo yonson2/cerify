@@ -1,8 +1,18 @@
 <script lang="ts">
-	import { ModeWatcher } from 'mode-watcher';
+	import { ModeWatcher, mode } from 'mode-watcher';
 	import '../app.css';
 	import LightSwitch from '$lib/components/ui/light-switch/light-switch.svelte';
 	import Logo from '$lib/components/ui/logo/logo.svelte';
+	import Particles from '$lib/components/ui/particles/particles.svelte';
+
+	$: color = '';
+	$: {
+		if ($mode === 'light') {
+			color = '#e21d48';
+		} else {
+			color = '#ffffff';
+		}
+	}
 </script>
 
 <ModeWatcher />
@@ -18,5 +28,8 @@
 	<div class="m-12">
 		<Logo />
 		<slot />
+		{#key $mode}
+			<Particles className="absolute inset-1 -z-10" refresh={true} {color} size={1.5} />
+		{/key}
 	</div>
 </main>
