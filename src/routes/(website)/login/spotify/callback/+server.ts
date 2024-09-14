@@ -3,6 +3,7 @@ import { generateIdFromEntropySize } from "lucia";
 import { spotify, lucia } from "$lib/server/auth";
 import { eq } from 'drizzle-orm';
 import { usersTable, type InsertUser, type SelectUser } from "../../../../../db/schema";
+import { db } from "$lib/server/drizzle";
 
 import type { RequestEvent } from "@sveltejs/kit";
 
