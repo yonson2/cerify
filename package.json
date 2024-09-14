@@ -37,6 +37,7 @@
   },
   "type": "module",
   "dependencies": {
+    "@sveltejs/adapter-node": "^5.2.2",
     "@iwsio/json-csv-core": "^1.1.7",
     "@libsql/client": "^0.10.0",
     "@lucia-auth/adapter-drizzle": "^1.1.0",
