@@ -58,6 +58,10 @@ const config: Config = {
         sans: [...fontFamily.sans]
       },
       keyframes: {
+        grid: {
+          "0%": { transform: "translateY(-50%)" },
+          "100%": { transform: "translateY(0)" },
+        },
         slidein: {
           from: {
             opacity: "0",
@@ -80,6 +84,7 @@ const config: Config = {
       animation: {
         slidein: "slidein 1s ease 300ms",
         shimmer: "shimmer 8s infinite",
+        grid: "grid 15s linear infinite",
       },
     },
   },

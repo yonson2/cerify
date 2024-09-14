@@ -1,4 +1,5 @@
 import { lucia } from "$lib/server/auth";
+import { refreshToken } from "$lib/server/spotify";
 import type { Handle } from "@sveltejs/kit";
 import { redirect } from "@sveltejs/kit";
 
@@ -53,9 +54,42 @@ export const handle: Handle = async ({ event, resolve }) => {
       ...sessionCookie.attributes
     });
   }
-  event.locals.user = user;
-  event.locals.session = session;
 
+  // the session may be valid but our spotify access token
+  // doesn't last as long.
+  if (session && user && session?.tokenExpiration < new Date()) {
+    const response = await refreshToken(session.refreshToken);
+    if (response.error) {
+      // we can't refresh anymore, logout.
+      await lucia.invalidateUserSessions(user.id);
+      const sessionCookie = lucia.createBlankSessionCookie();
+      event.cookies.set(sessionCookie.name, sessionCookie.value, {
+        path: ".",
+        ...sessionCookie.attributes
+      });
+      return resolve(event);
+    }
+    const { access_token, refresh_token, expires_in } = response;
+    const newSession = await lucia.createSession(
+      user.id,
+      {
+        token: access_token,
+        refreshToken: refresh_token,
+        tokenExpiration: expires_in
+      }
+    );
+    const sessionCookie = lucia.createSessionCookie(session.id);
+    event.cookies.set(sessionCookie.name, sessionCookie.value, {
+      path: ".",
+      ...sessionCookie.attributes
+    });
+    await lucia.invalidateSession(session.id)
+    event.locals.session = newSession;
+  } else {
+    event.locals.session = session
+  }
+
+  event.locals.user = user;
 
   // let's redirect logged-in users from going to the /login page.
   if (session && url.pathname === loginPath) {

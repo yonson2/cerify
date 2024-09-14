@@ -36,6 +36,7 @@
   },
   "type": "module",
   "dependencies": {
+    "@iwsio/json-csv-core": "^1.1.7",
     "@libsql/client": "^0.10.0",
     "@lucia-auth/adapter-drizzle": "^1.1.0",
     "arctic": "^1.9.2",
@@ -44,6 +45,7 @@
     "dotenv": "^16.4.5",
     "drizzle-orm": "^0.33.0",
     "formsnap": "^1.0.1",
+    "he": "^1.2.0",
     "mode-watcher": "^0.4.1",
     "svelte-awesome": "^3.3.4",
     "svelte-headless-table": "^0.18.2",

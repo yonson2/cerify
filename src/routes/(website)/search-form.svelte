@@ -14,7 +14,7 @@
 	const { form: formData } = form;
 </script>
 
-<form method="GET" action="/search">
+<form method="GET" action="/search" data-sveltekit-reload>
 	<Form.Field {form} name="q">
 		<Form.Control let:attrs>
 			<Form.Label>Search</Form.Label>

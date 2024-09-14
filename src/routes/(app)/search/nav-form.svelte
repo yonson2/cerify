@@ -16,7 +16,7 @@
 	const { form: formData } = form;
 </script>
 
-<form method="GET">
+<form method="GET" data-sveltekit-reload>
 	<Form.Field {form} name="q">
 		<Form.Control let:attrs>
 			<div class="flex">

@@ -1,12 +1,14 @@
-import type { PageServerLoad } from "./$types.js";
+import type { PageServerData } from "./$types.js";
 import { superValidate } from "sveltekit-superforms";
 import { formSchema } from "../../(website)/schema";
 import { zod } from "sveltekit-superforms/adapters";
+import { searchPlaylists } from "$lib/server/spotify";
 
-export const load: PageServerLoad = async ({ url }) => {
-  const searchQuery = url.searchParams.get('q') || '';
+export const load: PageServerData = async (data) => {
+  const searchQuery = data.url.searchParams.get('q') || '';
   const form = await superValidate({ q: searchQuery }, zod(formSchema))
-  console.log(form);
 
-  return { form };
+  const playlists = await searchPlaylists(searchQuery, data.locals.session.token)
+
+  return { form, playlists };
 };
