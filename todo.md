@@ -4,4 +4,4 @@
 <!-- - switch all localStorages to cookies. -->
 <!-- - protected routes -->
 
-- on stripe service, when doing requests check the session thing and manually
+<!-- - on stripe service, when doing requests check the session thing and manually refresh -->
